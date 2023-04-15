@@ -46,7 +46,7 @@ def main(data_type, lr,  cv):
         window_size = 8
         length_of_hour = int((60*60)/300) # 60 seconds * 60 / 300 (which is num seconds in 5 min)
         pos_sample_name = 'mortality'
-        path = '../DONTCOMMITdata/hirid_numpy'
+        path = '../hirid_numpy'
         signal_list = ['vm1', 'vm3', 'vm4', 'vm5', 'vm13', 'vm20', 'vm28', 'vm62', 'vm136', 'vm146', 'vm172', 'vm174', 'vm176', 'pm41', 'pm42', 'pm43', 'pm44', 'pm87']
         sliding_gap = 1
         pre_positive_window = int((24*60*60)/300) # 24 hrs

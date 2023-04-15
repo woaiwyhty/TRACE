@@ -55,7 +55,7 @@ def linear_classifier_epoch_run(dataset, train, classifier, class_weights, optim
     
     return epoch_predictions, epoch_losses, epoch_labels
 
-def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, classifier_input_size, baseline_type, encoder, window_size, class_weights, target_names, batch_size=32, return_models=False, return_scores=False, data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="../ckpt",  plt_path="../DONTCOMMITplots", classifier_name=""):
+def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, classifier_input_size, baseline_type, encoder, window_size, class_weights, target_names, batch_size=32, return_models=False, return_scores=False, data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="./ckpt",  plt_path="./DONTCOMMITplots", classifier_name=""):
     '''
     Trains a classifier to predict positive events in samples. 
     X_train is of shape (num_train_samples, 2, num_features, seq_len)
@@ -271,7 +271,7 @@ if __name__ == '__main__':
     print('Cutting off last 3 hrs of data')
     truncate_amt = 36
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    data_path = '../DONTCOMMITdata/hirid_numpy'
+    data_path = '../hirid_numpy'
     train_circulatory_data_maps = torch.from_numpy(np.load(os.path.join(data_path, 'train_circulatory_data_maps.npy')))[:, :, :, :-truncate_amt].float()
     TEST_circulatory_data_maps = torch.from_numpy(np.load(os.path.join(data_path, 'TEST_circulatory_data_maps.npy')))[:, :, :, :-truncate_amt].float()
 
@@ -389,7 +389,7 @@ if __name__ == '__main__':
     # (X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, 
     # classifier_input_size, baseline_type, encoder, window_size, class_weights, 
     # target_names, batch_size=32, return_models=False, return_scores=False, data_type='ICU', 
-    # classification_cv=0, encoder_cv=0, ckpt_path="../ckpt",  plt_path="../DONTCOMMITplots", 
+    # classification_cv=0, encoder_cv=0, ckpt_path="./ckpt",  plt_path="./DONTCOMMITplots", 
     # classifier_name=""):
     classifier = train_linear_classifier(X_train=train_circulatory_data_maps, y_train=y_train,
                             X_validation=train_circulatory_data_maps, y_validation=y_train,

@@ -55,7 +55,7 @@ def linear_classifier_epoch_run(dataset, train, classifier, optimizer, data_type
     
     return epoch_predictions, epoch_losses, epoch_labels
 
-def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, encoder, window_size, target_names, class_weights, device, lr_list, weight_decay_list, n_epochs_list, encoder_type, batch_size=32, return_models=False, return_scores=False, data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="../ckpt",  plt_path="../DONTCOMMITplots", classifier_name=""):
+def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, encoder, window_size, target_names, class_weights, device, lr_list, weight_decay_list, n_epochs_list, encoder_type, batch_size=32, return_models=False, return_scores=False, data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="./ckpt",  plt_path="./DONTCOMMITplots", classifier_name=""):
     '''
     Trains a classifier to predict positive events in samples. 
     X_train is of shape (num_train_samples, 2, num_features, seq_len)
@@ -388,7 +388,7 @@ if __name__ == '__main__':
         encoder = CausalCNNEncoder(in_channels=18, channels=4, depth=1, reduced_size=2, encoding_size=6, kernel_size=2, window_size=12, device=device)
     encoder.load_state_dict(checkpoint['encoder_state_dict'])
     
-    data_path = '../DONTCOMMITdata/hirid_numpy'
+    data_path = '../hirid_numpy'
     encoder.pruning_mask = checkpoint['pruning_mask']
     encoder.pruned_encoding_size = int(torch.sum(encoder.pruning_mask))
     print('encoder pruned_encoding_size: ', encoder.pruned_encoding_size)

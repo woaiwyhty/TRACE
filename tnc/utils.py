@@ -498,7 +498,7 @@ def dim_reduction_mixed_clusters(negative_encodings, positive_encodings, negativ
 
     plt.xlabel('First principal component')
     plt.ylabel('Second principal component')
-    plt.savefig('../DONTCOMMITplots/%s/%s/%s_negative_embeddings.pdf'%(data_type, unique_id, unique_name))
+    plt.savefig('./DONTCOMMITplots/%s/%s/%s_negative_embeddings.pdf'%(data_type, unique_id, unique_name))
 
 
     # PLOTTING ARREST PLOT
@@ -511,7 +511,7 @@ def dim_reduction_mixed_clusters(negative_encodings, positive_encodings, negativ
 
     plt.xlabel('First principal component')
     plt.ylabel('Second principal component')
-    plt.savefig('../DONTCOMMITplots/%s/%s/%s_positive_embeddings.pdf'%(data_type, unique_id, unique_name))
+    plt.savefig('./DONTCOMMITplots/%s/%s/%s_positive_embeddings.pdf'%(data_type, unique_id, unique_name))
 
 
     # PLOTTING MIXED PLOT
@@ -524,7 +524,7 @@ def dim_reduction_mixed_clusters(negative_encodings, positive_encodings, negativ
 
     plt.xlabel('First principal component')
     plt.ylabel('Second principal component')
-    plt.savefig('../DONTCOMMITplots/%s/%s/%s_positive_and_negative_embeddings.pdf'%(data_type, unique_id, unique_name))
+    plt.savefig('./DONTCOMMITplots/%s/%s/%s_positive_and_negative_embeddings.pdf'%(data_type, unique_id, unique_name))
     
 def dim_reduction_positive_clusters(positive_encodings, positive_cluster_labels, data_type, unique_name, unique_id):
     colors = ['g', 'r', 'b', 'y', 'm', 'c', 'k', 'w']
@@ -538,7 +538,7 @@ def dim_reduction_positive_clusters(positive_encodings, positive_cluster_labels,
 
     plt.xlabel('First principal component')
     plt.ylabel('Second principal component')
-    plt.savefig('../DONTCOMMITplots/%s/%s/%s_positive_trained_clustering_positive_embeddings.pdf'%(data_type, unique_id, unique_name))
+    plt.savefig('./DONTCOMMITplots/%s/%s/%s_positive_trained_clustering_positive_embeddings.pdf'%(data_type, unique_id, unique_name))
 
 
 def dim_reduction(encodings, labels, save_path, plot_name, label_names, reduction_type='TSNE'):
@@ -653,7 +653,7 @@ def plot_negative_and_mortality(negative_data_maps, mortality_data_maps, mortali
 
     plt.xlabel('First principal component')
     plt.ylabel('Second principal component')
-    plt.savefig('../DONTCOMMITplots/%s/%s/%s_mortality_and_negative_embeddings.pdf'%(data_type, unique_id, unique_name))
+    plt.savefig('./DONTCOMMITplots/%s/%s/%s_mortality_and_negative_embeddings.pdf'%(data_type, unique_id, unique_name))
     plt.close()
 
 

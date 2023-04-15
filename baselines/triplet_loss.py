@@ -201,7 +201,7 @@ def linear_classifier_epoch_run(dataset, train, classifier, optimizer, data_type
     return epoch_predictions, epoch_losses, epoch_labels
 
 
-def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, num_pre_positive_encodings, encoder, window_size, exp_type, batch_size=32, return_models=False, return_scores=False, pos_sample_name='arrest', data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="../ckpt",  plt_path="../DONTCOMMITplots"):
+def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, num_pre_positive_encodings, encoder, window_size, exp_type, batch_size=32, return_models=False, return_scores=False, pos_sample_name='arrest', data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="./ckpt",  plt_path="./DONTCOMMITplots"):
     '''
     Trains an RNN and linear classifier jointly. X_train is of shape (num_samples, num_windows_per_hour, encoding_size)
     and y_train is of shape (num_samples)
@@ -649,7 +649,7 @@ def main(is_train, data_type, lr, cv):
         lr = 1e-3
         length_of_hour = int((60*60)/300) # 60 seconds * 60 / 300 (which is num seconds in 5 min)
         pos_sample_name = 'mortality'
-        path = '../DONTCOMMITdata/hirid_numpy'
+        path = '../hirid_numpy'
         signal_list = ['vm1', 'vm3', 'vm4', 'vm5', 'vm13', 'vm20', 'vm28', 'vm62', 'vm136', 'vm146', 'vm172', 'vm174', 'vm176', 'pm41', 'pm42', 'pm43', 'pm44', 'pm87']
         sliding_gap = 1
         pre_positive_window = int((24*60*60)/300) # 24 hrs
@@ -717,7 +717,7 @@ def main(is_train, data_type, lr, cv):
         random.seed(seed_val)
         print("Seed set to: ", seed_val)
 
-        checkpoint = torch.load('ckpt/%s_trip/checkpoint_0.pth.tar'%(data_type))
+        checkpoint = torch.load('./ckpt/%s_trip/checkpoint_0.pth.tar'%(data_type))
         if data_type == 'ICU':
             encoder = CausalCNNEncoder(in_channels=10, channels=8, depth=2, reduced_size=30, encoding_size=encoding_size, kernel_size=3, window_size=window_size, device=device)
         elif data_type == 'HiRID':
@@ -807,7 +807,7 @@ def main(is_train, data_type, lr, cv):
 if __name__=="__main__":
     random.seed(1234)
     parser = argparse.ArgumentParser(description='Run Triplet Loss')
-    parser.add_argument('--data', type=str, default='ICU')
+    parser.add_argument('--data', type=str, default='HiRID')
     parser.add_argument('--cv', type=int, default=1)
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--train', action='store_true')

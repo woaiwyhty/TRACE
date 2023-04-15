@@ -435,7 +435,7 @@ def linear_classifier_epoch_run(dataset, train, classifier, optimizer, data_type
     
     return epoch_predictions, epoch_losses, epoch_labels
 
-def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, num_pre_positive_encodings, encoder, window_size, batch_size=32, return_models=False, return_scores=False, pos_sample_name='arrest', data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="../ckpt",  plt_path="../DONTCOMMITplots", classifier_name=""):
+def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, num_pre_positive_encodings, encoder, window_size, batch_size=32, return_models=False, return_scores=False, pos_sample_name='arrest', data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="./ckpt",  plt_path="./DONTCOMMITplots", classifier_name=""):
     '''
     Trains a classifier to predict positive events in samples.
     X_train is of shape (num_train_samples, 2, num_features, seq_len)
@@ -799,13 +799,13 @@ def learn_encoder(data_maps, encoder_type, encoder_hyper_params, pretrain_hyper_
         performance = []
         best_acc = 0
         best_loss = np.inf
-        if not os.path.exists('../ckpt/%s'%data_type):
-            os.mkdir('../ckpt/%s'%data_type)
+        if not os.path.exists('./ckpt/%s'%data_type):
+            os.mkdir('./ckpt/%s'%data_type)
         epoch_start = 0
         if cont:
-            if os.path.exists('../ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, cv)): # i.e. a checkpoint *has* been saved for this config/cv
+            if os.path.exists('./ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, cv)): # i.e. a checkpoint *has* been saved for this config/cv
                 print('Restarting from checkpoint')
-                checkpoint = torch.load('../ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, cv))
+                checkpoint = torch.load('./ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, cv))
                 encoder.load_state_dict(checkpoint['encoder_state_dict'])
                 encoder.pruning_mask = checkpoint['pruning_mask']
                 encoder.pruned_encoding_size = int(torch.sum(encoder.pruning_mask))
@@ -881,7 +881,7 @@ def learn_encoder(data_maps, encoder_type, encoder_hyper_params, pretrain_hyper_
                         'pruning_mask': pruning_mask
                     }
 
-                    torch.save(state, '../ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, cv))
+                    torch.save(state, './ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, cv))
                 
                 elif ADF: # If ADF, save checkpoint every epoch
                     print('(cv:%s)Epoch %d Encoder Loss =====> Training Loss: %.5f \t Training Accuracy: %.5f \t Validation Loss: %.5f \t Validation Accuracy: %.5f'
@@ -904,7 +904,7 @@ def learn_encoder(data_maps, encoder_type, encoder_hyper_params, pretrain_hyper_
                         'pruning_mask': pruning_mask
                     }
 
-                    torch.save(state, '../ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, cv))
+                    torch.save(state, './ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, cv))
 
                 if best_loss > validation_loss:
                     best_acc = validation_acc
@@ -913,8 +913,8 @@ def learn_encoder(data_maps, encoder_type, encoder_hyper_params, pretrain_hyper_
             accuracies.append(best_acc)
             losses.append(best_loss)
             # Save performance plots
-            if not os.path.exists('../DONTCOMMITplots/%s/%s'%(data_type, UNIQUE_ID)):
-                os.mkdir('../DONTCOMMITplots/%s/%s'%(data_type, UNIQUE_ID))
+            if not os.path.exists('./DONTCOMMITplots/%s/%s'%(data_type, UNIQUE_ID)):
+                os.mkdir('./DONTCOMMITplots/%s/%s'%(data_type, UNIQUE_ID))
 
             train_loss = [t[0] for t in performance]
             validation_loss = [t[1] for t in performance]
@@ -926,13 +926,13 @@ def learn_encoder(data_maps, encoder_type, encoder_hyper_params, pretrain_hyper_
             plt.plot(np.arange(n_epochs+1), validation_loss, label="Validation")
             plt.title("Loss")
             plt.legend()
-            plt.savefig(os.path.join("../DONTCOMMITplots/%s/%s"%(data_type, UNIQUE_ID), "%s_loss_%d.pdf"%(UNIQUE_NAME, cv)))
+            plt.savefig(os.path.join("./DONTCOMMITplots/%s/%s"%(data_type, UNIQUE_ID), "%s_loss_%d.pdf"%(UNIQUE_NAME, cv)))
             plt.figure()
             plt.plot(np.arange(n_epochs+1), train_acc, label="Train")
             plt.plot(np.arange(n_epochs+1), validation_acc, label="Validation")
             plt.title("Accuracy")
             plt.legend()
-            plt.savefig("../DONTCOMMITplots/%s/%s/%s_discriminator_accuracy_%d.pdf"%(data_type, UNIQUE_ID, UNIQUE_NAME, cv))
+            plt.savefig("./DONTCOMMITplots/%s/%s/%s_discriminator_accuracy_%d.pdf"%(data_type, UNIQUE_ID, UNIQUE_NAME, cv))
 
 
 
@@ -959,10 +959,10 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
     ENCODER_TYPE = encoder_type
     
     
-    if not os.path.exists("../DONTCOMMITplots/"):
-        os.mkdir("../DONTCOMMITplots/")
-    if not os.path.exists("../ckpt/"):
-        os.mkdir("../ckpt/")
+    if not os.path.exists("./DONTCOMMITplots/"):
+        os.mkdir("./DONTCOMMITplots/")
+    if not os.path.exists("./ckpt/"):
+        os.mkdir("./ckpt/")
     
     global ECODER_HYPER_PARAMS
     ECODER_HYPER_PARAMS = encoder_hyper_params
@@ -1033,7 +1033,7 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
         window_size = learn_encoder_hyper_params['window_size']
         length_of_hour = int((60*60)/300) # 60 seconds * 60 / 300 (which is num seconds in 5 min)
         
-        path = '../DONTCOMMITdata/hirid_numpy'
+        path = './hirid_numpy'
         signal_list = ['vm1', 'vm3', 'vm4', 'vm5', 'vm13', 'vm20', 'vm28', 'vm62', 'vm136', 'vm146', 'vm172', 'vm174', 'vm176', 'pm41', 'pm42', 'pm43', 'pm44', 'pm87']
         sliding_gap = 1
         
@@ -1142,12 +1142,12 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
             seed_val = 111*encoder_cv+2*(classification_cv+1)
             random.seed(seed_val)
             print("Seed set to: ", seed_val)
-            if os.path.exists('../ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, encoder_cv)): # i.e. a checkpoint *has* been saved for this config
+            if os.path.exists('./ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, encoder_cv)): # i.e. a checkpoint *has* been saved for this config
                 print('Loading encoder from checkpoint')
                 print('Classification CV: ', classification_cv)
                 print('Encoder for CV ', encoder_cv)
 
-                checkpoint = torch.load('../ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, encoder_cv))
+                checkpoint = torch.load('./ckpt/%s/%s_checkpoint_%d.tar'%(data_type, UNIQUE_NAME, encoder_cv))
                 encoder = get_encoder(encoder_type, encoder_hyper_params).to(device)
                 encoder.load_state_dict(checkpoint['encoder_state_dict'])
                 encoder.pruning_mask = checkpoint['pruning_mask']
@@ -1218,8 +1218,8 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
 
                 
             
-                if os.path.exists('../ckpt/%s/%s_encoder_checkpoint_%d_%sClassifier_checkpoint_%d.tar'%(data_type, UNIQUE_ID, encoder_cv, 'circulatory' if circulatory_failure else '', classification_cv)):
-                    checkpoint = torch.load('../ckpt/%s/%s_encoder_checkpoint_%d_Classifier_checkpoint_%d.tar'%(data_type, UNIQUE_ID, encoder_cv, classification_cv))
+                if os.path.exists('./ckpt/%s/%s_encoder_checkpoint_%d_%sClassifier_checkpoint_%d.tar'%(data_type, UNIQUE_ID, encoder_cv, 'circulatory' if circulatory_failure else '', classification_cv)):
+                    checkpoint = torch.load('./ckpt/%s/%s_encoder_checkpoint_%d_Classifier_checkpoint_%d.tar'%(data_type, UNIQUE_ID, encoder_cv, classification_cv))
                     if data_type == 'HiRID' or data_type == 'ICU':
                         classifier = RnnPredictor(encoding_size=encoder.pruned_encoding_size, hidden_size=8).to(device)
                     
@@ -1380,9 +1380,9 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
         
         '''
         # Plot dendogram for both clustering models
-        plot_dendrogram(clustering_model, title='Dendogram for Hierarchichal Clustering Model', file_name='../DONTCOMMITplots/%s/%s/%s_hierarchical_clustering_dendogram.pdf'%(data_type, UNIQUE_ID, UNIQUE_NAME), truncate_mode="level", p=3)
+        plot_dendrogram(clustering_model, title='Dendogram for Hierarchichal Clustering Model', file_name='./DONTCOMMITplots/%s/%s/%s_hierarchical_clustering_dendogram.pdf'%(data_type, UNIQUE_ID, UNIQUE_NAME), truncate_mode="level", p=3)
         plot_dendrogram(positive_clustering_model, title='Dendogram for Hierarchichal Clustering Model (Trained only on positive samples)', 
-        file_name='../DONTCOMMITplots/%s/%s/%s_hierarchical_clustering_positive_trained_dendogram.pdf'%(data_type, UNIQUE_ID, UNIQUE_NAME),truncate_mode="level", p=3)
+        file_name='./DONTCOMMITplots/%s/%s/%s_hierarchical_clustering_positive_trained_dendogram.pdf'%(data_type, UNIQUE_ID, UNIQUE_NAME),truncate_mode="level", p=3)
         '''
 
         plt.figure(figsize=(8, 5))
@@ -1390,7 +1390,7 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
         plt.ylabel('Count')
         plt.xlabel('State')
         plt.xticks(ticks=np.arange(clustering_model.n_clusters), labels=np.arange(clustering_model.n_clusters))
-        plt.savefig('../DONTCOMMITplots/%s/%s/%s_mixed_cluster_label_hist.pdf'%(data_type, UNIQUE_ID, unique_name))
+        plt.savefig('./DONTCOMMITplots/%s/%s/%s_mixed_cluster_label_hist.pdf'%(data_type, UNIQUE_ID, unique_name))
 
         
         plt.figure(figsize=(8, 5))
@@ -1398,14 +1398,14 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
         plt.ylabel('Count')
         plt.xlabel('State')
         plt.xticks(ticks=np.arange(clustering_model.n_clusters), labels=np.arange(clustering_model.n_clusters))
-        plt.savefig('../DONTCOMMITplots/%s/%s/%s_negative_cluster_label_hist.pdf'%(data_type, UNIQUE_ID, unique_name))
+        plt.savefig('./DONTCOMMITplots/%s/%s/%s_negative_cluster_label_hist.pdf'%(data_type, UNIQUE_ID, unique_name))
         
         plt.figure(figsize=(8, 5))
         plt.hist(clustering_model.labels_[masked_pos_inds], bins=clustering_model.n_clusters, density=False)
         plt.ylabel('Count')
         plt.xlabel('State')
         plt.xticks(ticks=np.arange(clustering_model.n_clusters), labels=np.arange(clustering_model.n_clusters))
-        plt.savefig('../DONTCOMMITplots/%s/%s/%s_positive_cluster_label_hist.pdf'%(data_type, UNIQUE_ID, unique_name))
+        plt.savefig('./DONTCOMMITplots/%s/%s/%s_positive_cluster_label_hist.pdf'%(data_type, UNIQUE_ID, unique_name))
 
 
         
@@ -1438,7 +1438,7 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
             
             labels = torch.Tensor(labels).cpu().numpy()
             apache_group_encodings = torch.vstack(apache_group_encodings).cpu().detach().numpy()
-            dim_reduction(encodings=apache_group_encodings, labels=labels, save_path='../DONTCOMMITplots/%s/%s/'%(data_type, unique_id), plot_name='%s_Apache_Group_Encodings.pdf'%unique_name, label_names=apache_names)
+            dim_reduction(encodings=apache_group_encodings, labels=labels, save_path='./DONTCOMMITplots/%s/%s/'%(data_type, unique_id), plot_name='%s_Apache_Group_Encodings.pdf'%unique_name, label_names=apache_names)
 
             print('Plotting Alluvial Plot')
             
@@ -1475,7 +1475,7 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
             fig = ax.get_figure()
             ax.set_title('Cluster vs Apache Group Distribution', fontsize=14)
             fig.set_size_inches(10,5)
-            plt.savefig('../DONTCOMMITplots/%s/%s/alluvial_cluster_plot.pdf'%(data_type, UNIQUE_ID))
+            plt.savefig('./DONTCOMMITplots/%s/%s/alluvial_cluster_plot.pdf'%(data_type, UNIQUE_ID))
 
 
             
@@ -1562,20 +1562,20 @@ def main(train_encoder, data_type, encoder_type, encoder_hyper_params, learn_enc
             ax.xaxis.set_tick_params(labelsize=12)
             ax.yaxis.set_tick_params(labelsize=12)
             
-            plt.savefig('../DONTCOMMITplots/%s/%s/%s_%s_risk_over_time_%d.pdf'%(data_type, UNIQUE_ID, UNIQUE_NAME, 'arrest' if plot_index < num_plots/2 else 'normal', plot_index))
+            plt.savefig('./DONTCOMMITplots/%s/%s/%s_%s_risk_over_time_%d.pdf'%(data_type, UNIQUE_ID, UNIQUE_NAME, 'arrest' if plot_index < num_plots/2 else 'normal', plot_index))
             '''
 
 
 
             # Plot heatmap and trajectory scatter plot
             sample = train_mixed_data_maps[ind].cpu().numpy()
-            plot_heatmap(sample=sample, encodings=encodings, cluster_labels=cluster_labels, risk_scores=risk_scores_over_time, normalization_specs=normalization_specs, path='../DONTCOMMITplots/', 
+            plot_heatmap(sample=sample, encodings=encodings, cluster_labels=cluster_labels, risk_scores=risk_scores_over_time, normalization_specs=normalization_specs, path='./DONTCOMMITplots/', 
             hm_file_name='%s/%s/%s_%s_trajectory_hm_%d.pdf'%(data_type, UNIQUE_ID, UNIQUE_NAME, 'positive_sample' if plot_index < num_positive_plotted else 'negative_sample', plot_index), 
             risk_plot_title='Risk Score for %s Sample'%('Negative' if plot_index >= num_positive_plotted else 'Positive'),
             signal_list=signal_list, length_of_hour=length_of_hour, window_size=window_size)
             # encodings, path, pca_file_name):
             if data_type == "ICU":
-                plot_pca_trajectory(encodings=encodings_for_rnn.reshape(-1, encodings_for_rnn.shape[-1]), path='../DONTCOMMITplots/', 
+                plot_pca_trajectory(encodings=encodings_for_rnn.reshape(-1, encodings_for_rnn.shape[-1]), path='./DONTCOMMITplots/', 
                 pca_file_name='%s/%s/%s_%s_trajectory_embeddings_%d.pdf'%(data_type, UNIQUE_ID, UNIQUE_NAME, 'positive' if plot_index < num_positive_plotted else 'negative', plot_index))
 
 

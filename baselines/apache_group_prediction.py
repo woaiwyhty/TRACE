@@ -58,7 +58,7 @@ def linear_classifier_epoch_run(dataset, train, classifier, class_weights, optim
     
     return epoch_predictions, epoch_losses, epoch_labels
 
-def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, baseline_type, encoder, window_size, class_weights, target_names, batch_size=32, return_models=False, return_scores=False, data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="../ckpt",  plt_path="../DONTCOMMITplots", classifier_name=""):
+def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, baseline_type, encoder, window_size, class_weights, target_names, batch_size=32, return_models=False, return_scores=False, data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="./ckpt",  plt_path="./DONTCOMMITplots", classifier_name=""):
     '''
     Trains a classifier to predict positive events in samples. 
     X_train is of shape (num_train_samples, 2, num_features, seq_len)
@@ -225,7 +225,7 @@ def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST
 
 
 if __name__ == '__main__':
-    path = '../DONTCOMMITdata/hirid_numpy'
+    path = '../hirid_numpy'
     train_first_24_hrs_data_maps = torch.from_numpy(np.load(os.path.join(path, 'train_first_24_hrs_data_maps.npy')))
     TEST_first_24_hrs_data_maps = torch.from_numpy(np.load(os.path.join(path, 'TEST_first_24_hrs_data_maps.npy')))
 
@@ -324,12 +324,12 @@ if __name__ == '__main__':
         if baseline_type=='raw':
             encoder = None
         elif baseline_type=='tnc':
-            checkpoint = torch.load('../ckpt/HiRID/0761_CausalCNNEncoder_HiRID_checkpoint_0.tar')
+            checkpoint = torch.load('./ckpt/HiRID/0761_CausalCNNEncoder_HiRID_checkpoint_0.tar')
             encoder = CausalCNNEncoder(in_channels=18, channels=4, depth=1, reduced_size=2, encoding_size=6, kernel_size=(6 if baseline_type=='cpc' else 2), window_size=12, device=device) 
             encoder_cv = 0
             encoder.load_state_dict(checkpoint['encoder_state_dict'])
         elif baseline_type=='tnc-icu':
-            checkpoint = torch.load('../ckpt/HiRID/0764_CausalCNNEncoder_HiRID_checkpoint_0.tar')
+            checkpoint = torch.load('./ckpt/HiRID/0764_CausalCNNEncoder_HiRID_checkpoint_0.tar')
             encoder = CausalCNNEncoder(in_channels=36, channels=4, depth=1, reduced_size=2, encoding_size=10, kernel_size=2, window_size=12, device=device) 
             encoder_cv = 0
             encoder.load_state_dict(checkpoint['encoder_state_dict'])

@@ -54,7 +54,7 @@ def linear_classifier_epoch_run(dataset, train, classifier, optimizer, data_type
     
     return epoch_predictions, epoch_losses, epoch_labels
 
-def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, encoder, window_size, target_names, class_weights, device, lr_list, weight_decay_list, n_epochs_list, batch_size=32, return_models=False, return_scores=False, data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="../ckpt",  plt_path="../DONTCOMMITplots", classifier_name=""):
+def train_linear_classifier(X_train, y_train, X_validation, y_validation, X_TEST, y_TEST, encoding_size, encoder, window_size, target_names, class_weights, device, lr_list, weight_decay_list, n_epochs_list, batch_size=32, return_models=False, return_scores=False, data_type='ICU', classification_cv=0, encoder_cv=0, ckpt_path="./ckpt",  plt_path="./DONTCOMMITplots", classifier_name=""):
     '''
     Trains a classifier to predict positive events in samples. 
     X_train is of shape (num_train_samples, 2, num_features, seq_len)
@@ -234,7 +234,7 @@ def apache_prediction(encoder, data_path, device):
     print('Cutting off last 3 hrs of data')
     truncate_amt = 36
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    data_path = '../DONTCOMMITdata/hirid_numpy'
+    data_path = '../hirid_numpy'
     train_circulatory_data_maps = torch.from_numpy(np.load(os.path.join(data_path, 'train_circulatory_data_maps.npy')))[:, :, :, :-truncate_amt].float()
     TEST_circulatory_data_maps = torch.from_numpy(np.load(os.path.join(data_path, 'TEST_circulatory_data_maps.npy')))[:, :, :, :-truncate_amt].float()
 
@@ -276,7 +276,7 @@ if __name__ == '__main__':
     
     encoder = CausalCNNEncoder(in_channels=36, channels=4, depth=1, reduced_size=2, encoding_size=10, kernel_size=2, window_size=12, device=device)
     
-    data_path = '../DONTCOMMITdata/hirid_numpy'
+    data_path = '../hirid_numpy'
     
     print('encoder pruned_encoding_size: ', encoder.pruned_encoding_size)
     print('encoder pruning_mask: ', encoder.pruning_mask)

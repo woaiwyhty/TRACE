@@ -3,9 +3,15 @@ import pandas as pd
 import pyarrow as pa
 import datetime
 import random
-import os, psutil
-from data_generator.utils import round_up_by_ws
+import os
+import psutil
 
+def round_up_by_ws(num, ws):
+    '''
+    Returns the smallest multiple of ws larger than num
+    e.g. if ws is 4 and num is 6, then this will return 8
+    '''
+    return -((-num)//ws)*ws
 
 
 def df_to_numpy(merged_df, min_seq_len, max_seq_len, signal_list, missingness_threshold=0.4):
@@ -366,7 +372,7 @@ def get_circulatory_failure_data(merged_df, admission_times, time_of_vasopressor
 
 
 if __name__ == '__main__':
-    random.seed(100) 
+    random.seed(100)
     process = psutil.Process(os.getpid())
     signal_list = ['vm1', 'vm3', 'vm4', 'vm5', 'vm13', 'vm20', 'vm28', 'vm62', 'vm136', 'vm146', 'vm172', 'vm174', 'vm176', 'pm41', 'pm42', 'pm43', 'pm44', 'pm87']
 
@@ -379,7 +385,7 @@ if __name__ == '__main__':
         print(process.memory_info().rss/1e9, 'GB')
         dfs = []
         for part in range(0, 250):
-            df = pd.read_parquet('DONTCOMMITdata/hirid/1.1.1/imputed_stage/imputed_stage_parquet/parquet/part-%d.parquet'%part)
+            df = pd.read_parquet('/Users/yuhan/physionet.org/files/hirid/1.1.1/imputed_stage/imputed_stage_parquet/parquet/part-%d.parquet'%part)
             dfs.append(df)
 
 
@@ -410,10 +416,10 @@ if __name__ == '__main__':
 
         train_encoder_data_maps, TEST_encoder_data_maps, normalization_specs = normalize_signals(train_encoder_data_maps, TEST_encoder_data_maps)
 
-        np.save('DONTCOMMITdata/hirid_numpy/train_encoder_data_maps.npy', train_encoder_data_maps)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_encoder_data_maps.npy', TEST_encoder_data_maps)
-        np.save('DONTCOMMITdata/hirid_numpy/train_encoder_PIDs.npy', train_encoder_PIDs)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_encoder_PIDs.npy', TEST_encoder_PIDs)
+        np.save('./hirid_numpy/train_encoder_data_maps.npy', train_encoder_data_maps)
+        np.save('./hirid_numpy/TEST_encoder_data_maps.npy', TEST_encoder_data_maps)
+        np.save('./hirid_numpy/train_encoder_PIDs.npy', train_encoder_PIDs)
+        np.save('./hirid_numpy/TEST_encoder_PIDs.npy', TEST_encoder_PIDs)
 
         print('Memory Usage 3:')
         print(process.memory_info().rss/1e9, 'GB')
@@ -430,7 +436,7 @@ if __name__ == '__main__':
 
         
 
-        reference = pd.read_csv('DONTCOMMITdata/hirid/1.1.1/general_table.csv')
+        reference = pd.read_csv('/Users/yuhan/physionet.org/files/hirid/1.1.1/general_table.csv')
         discharge_status = reference[['patientid', 'discharge_status']]
 
         
@@ -458,7 +464,7 @@ if __name__ == '__main__':
         for part in range(250):
             print("Part:")
             print(part)
-            df = pd.read_parquet('DONTCOMMITdata/hirid/1.1.1/raw_stage/observation_tables/parquet/part-%d.parquet'%part)
+            df = pd.read_parquet('/Users/yuhan/physionet.org/files/hirid/1.1.1/raw_stage/observation_tables/parquet/part-%d.parquet'%part)
             
             for pid in first_24_hrs_PIDs:
                 if not df[df['patientid']==pid].empty: # If this PID is in df
@@ -547,17 +553,17 @@ if __name__ == '__main__':
         num_deaths = len(np.where(np.sum(TEST_mortality_labels, axis=1).reshape(-1,) > 0)[0])
         print('Total num of deaths in TEST data', num_deaths)
 
-        np.save('DONTCOMMITdata/hirid_numpy/train_mortality_data_maps.npy', train_mortality_data_maps)
-        np.save('DONTCOMMITdata/hirid_numpy/train_mortality_labels.npy', train_mortality_labels)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_mortality_data_maps.npy', TEST_mortality_data_maps)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_mortality_labels.npy', TEST_mortality_labels)
-        np.save('DONTCOMMITdata/hirid_numpy/normalization_specs.npy', normalization_specs)
-        np.save('DONTCOMMITdata/hirid_numpy/train_first_24_hrs_PIDs.npy', train_first_24_hrs_PIDs)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_first_24_hrs_PIDs.npy', TEST_first_24_hrs_PIDs)
-        np.save('DONTCOMMITdata/hirid_numpy/train_Apache_Groups.npy', train_Apache_Groups)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_Apache_Groups.npy', TEST_Apache_Groups)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_first_24_hrs_data_maps.npy', TEST_first_24_hrs_data_maps)
-        np.save('DONTCOMMITdata/hirid_numpy/train_first_24_hrs_data_maps.npy', train_first_24_hrs_data_maps)
+        np.save('./hirid_numpy/train_mortality_data_maps.npy', train_mortality_data_maps)
+        np.save('./hirid_numpy/train_mortality_labels.npy', train_mortality_labels)
+        np.save('./hirid_numpy/TEST_mortality_data_maps.npy', TEST_mortality_data_maps)
+        np.save('./hirid_numpy/TEST_mortality_labels.npy', TEST_mortality_labels)
+        np.save('./hirid_numpy/normalization_specs.npy', normalization_specs)
+        np.save('./hirid_numpy/train_first_24_hrs_PIDs.npy', train_first_24_hrs_PIDs)
+        np.save('./hirid_numpy/TEST_first_24_hrs_PIDs.npy', TEST_first_24_hrs_PIDs)
+        np.save('./hirid_numpy/train_Apache_Groups.npy', train_Apache_Groups)
+        np.save('./hirid_numpy/TEST_Apache_Groups.npy', TEST_Apache_Groups)
+        np.save('./hirid_numpy/TEST_first_24_hrs_data_maps.npy', TEST_first_24_hrs_data_maps)
+        np.save('./hirid_numpy/train_first_24_hrs_data_maps.npy', train_first_24_hrs_data_maps)
         print('Saved mortality data, first_24_hrs_PIDs, 24_hrs_data, and apache groups')
         del train_mortality_data_maps
         del train_mortality_labels
@@ -570,7 +576,7 @@ if __name__ == '__main__':
         del TEST_first_24_hrs_data_maps
         del train_first_24_hrs_data_maps
     
-    elif process_circulatory
+    elif process_circulatory:
 
         print('Moving on to circulatory failure data')
 
@@ -582,7 +588,7 @@ if __name__ == '__main__':
         for part in range(250):
             print("Raw Part:")
             print(part)
-            df = pd.read_parquet('DONTCOMMITdata/hirid/1.1.1/raw_stage/observation_tables/parquet/part-%d.parquet'%part)
+            df = pd.read_parquet('/Users/yuhan/physionet.org/files/hirid/1.1.1/raw_stage/observation_tables/parquet/part-%d.parquet'%part)
 
             for patient_data in df.groupby('patientid'):
                 patientid, patient_data = patient_data
@@ -597,7 +603,7 @@ if __name__ == '__main__':
         for part in range(250):
             print("Pharma Part:")
             print(part)
-            df = pd.read_parquet('DONTCOMMITdata/hirid/1.1.1/raw_stage/pharma_records/parquet/part-%d.parquet'%part)
+            df = pd.read_parquet('/Users/yuhan/physionet.org/files/hirid/1.1.1/raw_stage/pharma_records/parquet/part-%d.parquet'%part)
             
             for patient_data in df.groupby('patientid'):
                 patientid, patient_data = patient_data
@@ -612,7 +618,7 @@ if __name__ == '__main__':
 
         dfs = []
         for part in range(0, 250):
-            df = pd.read_parquet('DONTCOMMITdata/hirid/1.1.1/imputed_stage/imputed_stage_parquet/parquet/part-%d.parquet'%part)
+            df = pd.read_parquet('/Users/yuhan/physionet.org/files/hirid/1.1.1/imputed_stage/imputed_stage_parquet/parquet/part-%d.parquet'%part)
             dfs.append(df)
 
         print('=================')
@@ -623,7 +629,7 @@ if __name__ == '__main__':
         print('circulatory_labels shape: ', circulatory_labels.shape)
         print('circulatory_PIDs shape: ', circulatory_PIDs.shape)
 
-        normalization_specs = np.load('DONTCOMMITdata/hirid_numpy/normalization_specs.npy')
+        normalization_specs = np.load('./hirid_numpy/normalization_specs.npy')
         for feature in range(normalization_specs.shape[1]):
             train_signal_mean = normalization_specs[0, feature]
             train_signal_std = normalization_specs[1, feature]
@@ -645,13 +651,13 @@ if __name__ == '__main__':
         TEST_circulatory_labels = circulatory_labels[n_train:]
         TEST_circulatory_PIDs = circulatory_PIDs[n_train:]
 
-        np.save('DONTCOMMITdata/hirid_numpy/train_circulatory_data_maps.npy', train_circulatory_data_maps)
-        np.save('DONTCOMMITdata/hirid_numpy/train_circulatory_labels.npy', train_circulatory_labels)
-        np.save('DONTCOMMITdata/hirid_numpy/train_circulatory_PIDs.npy', train_circulatory_PIDs)
+        np.save('./hirid_numpy/train_circulatory_data_maps.npy', train_circulatory_data_maps)
+        np.save('./hirid_numpy/train_circulatory_labels.npy', train_circulatory_labels)
+        np.save('./hirid_numpy/train_circulatory_PIDs.npy', train_circulatory_PIDs)
 
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_circulatory_data_maps.npy', TEST_circulatory_data_maps)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_circulatory_labels.npy', TEST_circulatory_labels)
-        np.save('DONTCOMMITdata/hirid_numpy/TEST_circulatory_PIDs.npy', TEST_circulatory_PIDs)
+        np.save('./hirid_numpy/TEST_circulatory_data_maps.npy', TEST_circulatory_data_maps)
+        np.save('./hirid_numpy/TEST_circulatory_labels.npy', TEST_circulatory_labels)
+        np.save('./hirid_numpy/TEST_circulatory_PIDs.npy', TEST_circulatory_PIDs)
 
         print('Memory Usage 8:')
         print(process.memory_info().rss/1e9, 'GB')
